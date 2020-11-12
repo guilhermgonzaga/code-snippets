@@ -7,39 +7,36 @@
 
 class Counter {
 public:
-  explicit Counter(long start = 0): count(start) {}
+	explicit Counter(long start = 0): count{start} {}
 
-  void operator()() {
-    std::cout << ++count << std::endl;
-  }
+	long operator()() {
+		return ++count;
+	}
 private:
-  long count;
+	long count;
 };
 
 auto NewCounterClosure(long count = 0) {
-  return [=]() mutable {
-    std::cout << ++count << std::endl;
-  };
+	return [count]() mutable {
+		return ++count;
+	};
 }
 
 int main() {
-  long start;
-  std::cin >> start;
+	Counter counter1;
+	Counter counter2{};
+	auto counter3(NewCounterClosure());
+	auto counter4{NewCounterClosure()};
+	auto counter5 = NewCounterClosure();
 
-  Counter counter1{start};
-  Counter counter2{start};
-  auto counter3 = NewCounterClosure(start);
-  auto counter4 = NewCounterClosure(start);
+	std::cout << counter1() << counter1() << counter1() << std::endl;
+	std::cout << counter2() << counter2() << counter2() << std::endl;
+	std::cout << counter3() << counter3() << counter3() << std::endl;
+	std::cout << counter4() << counter4() << counter4() << std::endl;
+	std::cout << counter5() << counter5() << counter5() << std::endl;
 
-  counter1(); counter1(); counter1();
-  counter2(); counter2(); counter2();
-  counter3(); counter3(); counter3();
-  counter4(); counter4(); counter4();
+	std::cout << "sizeof(Counter) = " << sizeof(Counter) << std::endl;
+	std::cout << "sizeof(NewCounterClosure()) = " << sizeof(NewCounterClosure()) << std::endl;
 
-  std::cout << "sizeof(counter1) = " << sizeof(counter1) << std::endl;
-  std::cout << "sizeof(counter2) = " << sizeof(counter2) << std::endl;
-  std::cout << "sizeof(counter3) = " << sizeof(counter3) << std::endl;
-  std::cout << "sizeof(counter4) = " << sizeof(counter4) << std::endl;
-
-  return 0;
+	return 0;
 }
